@@ -2,10 +2,32 @@
 [![NPM version](https://badge.fury.io/js/evented-report.png)](http://badge.fury.io/js/evented-report)
 
 
-[![Build Status](https://travis-ci.org/goodeggs/evented-report.png)](https://travis-ci.org/goodeggs/evented-report)
-
-
 Simple wrapper to [node-csv](https://www.npmjs.org/package/csv) for using events to pump data through the csv pipes.
+
+## Example
+
+Sometimes you need to do several separate queries and compose them to
+to form your output.  Here's simple, but common use case:
+
+```
+class JellyBeanInventory extends require 'evented-report'
+  # Set column headers to make emitting data clear & explicit.  It also creates a csv header row.
+  columns: ['Flavor', 'My Tasting Notes', 'Quantity']
+
+  run: ->
+    JellyBean.find (err, jellies) ->
+      for jelly in jellies
+        @emit 'data',
+          Flavor: jelly.name
+          'My Tasting Notes': note.notes
+          Quantity: jelly.quantity
+
+      @emit 'end'
+
+
+jbi = new JellyBeanInventory()
+jbi.toCSV(process.stdout)       # Give it an output stream!
+```
 
 
 ## Contributing
